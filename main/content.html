@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI English Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #005A9C;
+            --accent-teal: #00BFA5;
+            --background-light: #F7F9FC;
+            --card-bg: #FFFFFF;
+            --text-dark: #2A3342;
+            --text-light: #556987;
+            --border-color: #E6EAF1;
+            --shadow: 0px 10px 30px rgba(0, 90, 156, 0.08);
+            --success-green: #28a745;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-light);
+            margin: 0;
+            padding: 2rem;
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .container {
+            max-width: 1400px;
+            margin: auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary-blue); }
+        .profile { display: flex; align-items: center; gap: 15px; }
+        .profile img { width: 50px; height: 50px; border-radius: 50%; border: 3px solid var(--accent-teal); }
+        .profile span { font-weight: 600; }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+        .card h2 {
+            margin-top: 0;
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Interactive Study Plan */
+        .study-plan-header {
+            margin-bottom: 1rem;
+        }
+        .progress-bar-container {
+            background-color: #eef2f7;
+            border-radius: 10px;
+            height: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            width: 60%; /* This will be dynamically updated */
+            height: 100%;
+            background-color: var(--accent-teal);
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+        }
+        .study-plan ul { list-style-type: none; padding: 0; }
+        .study-plan li {
+            display: flex;
+            align-items: center;
+            padding: 1.2rem 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        .study-plan li:last-child { border-bottom: none; }
+        .task-icon { font-size: 2rem; margin-right: 1.5rem; }
+        .task-content { flex-grow: 1; }
+        .task-title { font-weight: 600; font-size: 1.1rem; }
+        .task-focus { font-size: 0.9em; color: var(--text-light); }
+        .task-checkbox {
+            margin-left: 1rem;
+            transform: scale(1.5);
+            cursor: pointer;
+        }
+        .study-plan li.completed {
+            opacity: 0.6;
+        }
+        .study-plan li.completed .task-title {
+            text-decoration: line-through;
+        }
+
+        /* Skill Analysis & Quick Access */
+        .skill-analysis-content, .quick-access ul {
+            padding: 0;
+            list-style: none;
+        }
+        .skill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        .skill-bar {
+            width: 60%;
+            height: 8px;
+            background: #eef2f7;
+            border-radius: 4px;
+        }
+        .skill-level {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-teal));
+            border-radius: 4px;
+        }
+        .ai-tip {
+            background-color: #e8f5e9;
+            border-left: 4px solid var(--success-color);
+            padding: 15px;
+            font-size: 0.9em;
+            border-radius: 0 8px 8px 0;
+            margin-top: 25px;
+        }
+        .quick-access a {
+            display: block;
+            text-decoration: none;
+            color: var(--primary-blue);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            transition: background-color 0.2s, transform 0.2s;
+            border: 1px solid var(--border-color);
+        }
+        .quick-access a:hover {
+            background-color: #f0f4f8;
+            transform: translateX(5px);
+        }
+
+        /* Library Section */
+        .library-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .search-bar {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 300px;
+        }
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .library-card {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        .library-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 90, 156, 0.15);
+        }
+        .library-card .icon {
+            font-size: 2rem;
+            margin-right: 20px;
+            padding: 18px;
+            border-radius: 12px;
+            color: white;
+        }
+        .library-card .text h3 { margin: 0 0 5px 0; font-size: 1.2rem; color: var(--text-dark); }
+        .library-card .text p { margin: 0; color: var(--text-light); }
+        .icon-aptis { background: linear-gradient(45deg, #2196f3, #64b5f6); }
+        .icon-business { background: linear-gradient(45deg, #5e35b1, #9575cd); }
+        .icon-conversation { background: linear-gradient(45deg, #f57c00, #ffb74d); }
+        .icon-grammar { background: linear-gradient(45deg, #00796b, #4db6ac); }
+        .icon-audio { background: linear-gradient(45deg, #e53935, #ef5350); }
+        .icon-exam-prep { background: linear-gradient(45deg, #8e24aa, #ba68c8); }
+        .icon-kids { background: linear-gradient(45deg, #d81b60, #f06292); }
+        .icon-intensive { background: linear-gradient(45deg, #546e7a, #90a4ae); }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo">IntelliLearn IELTS</div>
+            <div class="profile">
+                <span>Maria</span>
+                <img src="https://i.pravatar.cc/150?u=maria" alt="User Avatar">
+            </div>
+        </header>
+
+        <main>
+            <div class="dashboard-grid">
+                <div class="card study-plan">
+                    <div class="study-plan-header">
+                        <h2>Your AI Weekly Focus Plan</h2>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar"></div>
+                        </div>
+                    </div>
+                    <ul>
+                        <li>
+                            <div class="task-icon">✍️</div>
+                            <div class="task-content">
+                                <div class="day">Monday</div>
+                                <div class="task-title">APTIS Writing Task 1</div>
+                                <div class="task-focus">Focus: Responding to informal messages</div>
+                            </div>
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                        </li>
+                        <li>
+                            <div class="task-icon">🗣️</div>
+                            <div class="task-content">
+                                <div class="day">Tuesday</div>
+                                <div class="task-title">Speaking Part 3 Practice</div>
+                                <div class="task-focus">Focus: Fluency and complex sentences</div>
+                            </div>
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                        </li>
+                         <li>
+                            <div class="task-icon">🧠</div>
+                            <div class="task-content">
+                                <div class="day">Wednesday</div>
+                                <div class="task-title">Grammar: Conditionals</div>
+                                <div class="task-focus">Focus: Mastering second & third conditionals</div>
+                            </div>
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                        </li>
+                         <li>
+                            <div class="task-icon">🎧</div>
+                            <div class="task-content">
+                                <div class="day">Thursday</div>
+                                <div class="task-title">Listening Practice</div>
+                                <div class="task-focus">Focus: Identifying specific information</div>
+                            </div>
+                             <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                        </li>
+                         <li>
+                            <div class="task-icon">🎯</div>
+                            <div class="task-content">
+                                <div class="day">Friday</div>
+                                <div class="task-title">Weekly Review Quiz</div>
+                                <div class="task-focus">Check your progress on this week's topics</div>
+                            </div>
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="right-column">
+                    <div class="card skill-analysis">
+                        <h2>Your Skill Breakdown</h2>
+                        <div class="skill-analysis-content">
+                            <div class="skill-item"><span>Reading</span> <div class="skill-bar"><div class="skill-level" style="width: 85%;"></div></div></div>
+                            <div class="skill-item"><span>Listening</span> <div class="skill-bar"><div class="skill-level" style="width: 80%;"></div></div></div>
+                            <div class="skill-item"><span>Speaking</span> <div class="skill-bar"><div class="skill-level" style="width: 60%;"></div></div></div>
+                            <div class="skill-item"><span>Writing</span> <div class="skill-bar"><div class="skill-level" style="width: 55%;"></div></div></div>
+                             <div class="skill-item"><span>Grammar</span> <div class="skill-bar"><div class="skill-level" style="width: 65%;"></div></div></div>
+                             <div class="skill-item"><span>Vocabulary</span> <div class="skill-bar"><div class="skill-level" style="width: 90%;"></div></div></div>
+                        </div>
+                        <div class="ai-tip">
+                            <strong>AI Tip:</strong> Focus on Speaking fluency and Writing Task 1 to see the biggest score improvement!
+                        </div>
+                    </div>
+                     <div class="card quick-access" style="margin-top: 2.5rem;">
+                        <h2>Quick Access</h2>
+                        <ul>
+                            <li><a href="#">📝 Start a Mock Test</a></li>
+                            <li><a href="#">📖 Review Vocabulary Lists</a></li>
+                            <li><a href="#">🗣️ Free Speaking Practice</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="library">
+                 <div class="library-header">
+                     <h2>Explore the Full Lesson Library</h2>
+                     <input type="text" class="search-bar" placeholder="Search for lessons...">
+                </div>
+                <div class="library-grid">
+                    <a href="#" class="library-card">
+                        <div class="icon icon-aptis">🎓</div>
+                        <div class="text"><h3>APTIS</h3><p>Official Aptis exam practice.</p></div>
+                    </a>
+                    <a href="#" class="library-card">
+                        <div class="icon icon-business">👔</div>
+                        <div class="text"><h3>Business English</h3><p>Master professional communication.</p></div>
+                    </a>
+                    <a href="#" class="library-card">
+                        <div class="icon icon-conversation">💬</div>
+                        <div class="text"><h3>Conversation</h3><p>Practice speaking on various topics.</p></div>
+                    </a>
+                    <a href="#" class="library-card">
+                        <div class="icon icon-grammar">🧠</div>
+                        <div class="text"><h3>Grammar</h3><p>Lessons and exercises for all levels.</p></div>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<script>
+    function updateProgress() {
+        const checkboxes = document.querySelectorAll('.task-checkbox');
+        const totalTasks = checkboxes.length;
+        let completedTasks = 0;
+        
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                completedTasks++;
+                checkbox.parentElement.classList.add('completed');
+            } else {
+                checkbox.parentElement.classList.remove('completed');
+            }
+        });
+        
+        const progressPercentage = (completedTasks / totalTasks) * 100;
+        document.querySelector('.progress-bar').style.width = progressPercentage + '%';
+    }
+    
+    // Initial call to set the state
+    updateProgress();
+</script>
+
+</body>
+</html>
